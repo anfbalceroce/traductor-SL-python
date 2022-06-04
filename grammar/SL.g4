@@ -1,28 +1,22 @@
 grammar SL;
 
-start : ('programa' ID)? header* main ;
+start : ('programa' ID)? header* main sub*;
 header : 'const' const+ | 'tipos' tipo_p+ | 'var' var+ ;
-var : ID (',' ID)* ':' tipo (';' | '\n' | /* epsilon */)  ;
-const : ID '=' expresion (';' | '\n' | /* epsilon */)  ;
-tipo_p : ID ':' tipo (';' | '\n' | /* epsilon */)  ;
-main : 'inicio' sentencias 'fin' sub  ;
-sentencias : sentencia (';' | '\n' | /* epsilon */) next_sentencia  | /* epsilon */  ;
-next_sentencia : sentencia (';' | '\n' | /* epsilon */) next_sentencia  | /* epsilon */  ;
-sentencia : ID assng_call  | 'si' '(' expresion ')' '{' sentenciasif sino '}'  | 'mientras' '(' expresion ')' '{' sentenciasif '}'  | 'repetir' sentenciasif 'hasta' '(' expresion ')'  | 'eval' '{' 'caso' '(' expresion ')' sentenciasif case sw_sino '}'  | 'desde' for_start '{' sentenciasif '}'  ;
-assng_call : '(' params ')'  | id_extend assingment  ;
-for_start : ID '=' num_expresion for_end  ;
-for_end : 'hasta' num_expresion for_step  ;
-for_step : 'paso' num_expresion  | /* epsilon */  ;
-sino : 'sino' sino_p  | /* epsilon */  ;
-sino_p : sentenciasnoif sino  | 'si' '(' expresion ')' sino_pp sino  ;
-sino_pp : sentenciasif  | '{' sentenciasif sino '}' (';' | '\n' | /* epsilon */) next_sentencia  ;
-sentenciasnoif : sentencianoif (';' | '\n' | /* epsilon */) next_sentencia  ;
-sentencianoif : ID assng_call  | 'mientras' '(' expresion ')' '{' sentenciasif '}'  | 'repetir' sentenciasif 'hasta' '(' expresion ')'  | 'eval' '{' 'caso' '(' expresion ')' sentenciasif case sw_sino '}'  | 'desde' for_start '{' sentenciasif '}'  ;
-sentenciasif : sentencia (';' | '\n' | /* epsilon */) next_sentencia  ;
-case : 'caso' '(' expresion ')' sentenciasif case  | /* epsilon */  ;
-sw_sino : 'sino' sentenciasif  | /* epsilon */  ;
-assingment : '=' assingment_p  ;
-assingment_p : expresion  | '{' m_expresion '}'  ;
+var : ID (',' ID)* ':' tipo (';' | /* epsilon */)  ;
+const : ID '=' expresion (';' | /* epsilon */)  ;
+tipo_p : ID ':' tipo (';' | /* epsilon */)  ;
+
+main : 'inicio' sentencia* 'fin' ;
+sentencia : ID '(' params ')' SEP?
+          | ID id_extend '=' (expresion  | '{' m_expresion '}') SEP?
+          | 'si' '(' expresion ')' '{' sentencia+ ('sino' 'si' '(' expresion ')' sentencia+)* ('sino' sentencia+)? '}' SEP?
+          | 'mientras' '(' expresion ')' '{' sentencia+ '}' SEP?
+          | 'repetir' sentencia+ 'hasta' '(' expresion ')' SEP?
+          | 'eval' '{' case+ ('sino' sentencia+)? '}' SEP?
+          | 'desde' ID '=' num_expresion 'hasta' num_expresion ('paso' num_expresion)? '{' sentencia+ '}' SEP? ;
+
+case : 'caso' '(' expresion ')' sentencia+ ;
+
 m_expresion : m_term m_expresion_p  | /* epsilon */  ;
 m_expresion_p : ',' m_term m_expresion_p  | /* epsilon */  ;
 m_term : m_factor  ;
@@ -44,16 +38,15 @@ num_factor : num_factor_p  | '+' num_factor_p  | '-' num_factor_p  ;
 num_factor_p : base_element num_factor_pp  ;
 num_factor_pp : '^' base_element num_factor_pp  | /* epsilon */  ;
 base_element : STRING  | NUM  | '(' expresion ')'  | call  ;
-sub : 'subrutina' ID '(' args ')' return  | /* epsilon */  ;
+
+sub : 'subrutina' ID '(' args ')' (header* submain | 'retorna' tipo header* submainr)  ;
 args : ref ID (',' ID)* ':' tipo next_arg  | /* epsilon */  ;
 next_arg : ';' ref ID (',' ID)* ':' tipo next_arg  | /* epsilon */  ;
 ref : 'ref'  | /* epsilon */  ;
-return : 'retorna' tipo subheaderr  | subheader  ;
-subheader : 'const' const+ subheader  | 'tipos' tipo_p+ subheader  | 'var' var+ subheader  | subbody  ;
-subbody : 'inicio' subsentencias 'fin' sub  ;
-subheaderr : 'const' const+ subheaderr  | 'tipos' tipo_p+ subheaderr  | 'var' var+ subheaderr  | subbodyr  ;
-subbodyr : 'inicio' subsentencias 'retorna' '(' expresion ')' 'fin' sub  ;
-subsentencias : sentencia (';' | '\n' | /* epsilon */) next_sentencia  | /* epsilon */  ;
+
+submain : 'inicio' sentencia+ 'fin' ;
+submainr: 'inicio' sentencia+ 'retorna' '(' expresion ')' 'fin' ;
+
 tipo : tipos  | type_vector  | type_matrix  | register  ;
 tipos : 'cadena'  | 'logico'  | 'numerico'  | ID  ;
 type_vector : 'vector' '[' v_len  ;
@@ -63,6 +56,7 @@ dimention_list : '*' next_dimention ']' tipo  | dimention next_dimention ']' tip
 next_dimention : ',' next_dimention_p  | /* epsilon */  ;
 next_dimention_p : '*' next_dimention  | dimention next_dimention  ;
 dimention : ID  | NUM  ;
+
 register : 'registro' '{' var+ '}'  ;
 id_extend : ids_options id_extend  | /* epsilon */  ;
 ids_options : '[' num_expresion matrix ']'  | '.' ID  ;
@@ -74,9 +68,10 @@ matrix : ',' num_expresion matrix  | /* epsilon */  ;
 
 
 ID : 	[a-zA-Z\u00F1\u00D1_] [a-zA-Z\u00F1\u00D1_0-9]* ;
-NUM : [0-9]+('.'[0-9])?[0-9]*([eE][+-]?[0-9])?[0-9]*;
-STRING : '"' ~["\n]* '"' | '\'' ~['\n]* '\'';
-BOOL : 'TRUE'  | 'FALSE'  | 'SI'  | 'NO'  ;
+NUM : [0-9]+('.'[0-9])?[0-9]*([eE][+-]?[0-9])?[0-9]* ;
+STRING : '"' ~["\n]* '"' | '\'' ~['\n]* '\'' | ('“'|'”') ~['\n]* ('“'|'”') | '‘' ~['\n]* '’' ;
+BOOL : 'TRUE'  | 'FALSE'  | 'SI'  | 'NO' ;
+SEP : ';' ;
 COMMENT1 : '//' ~[\n]* -> skip;
 COMMENT2 :  '/*' .*? '*/' -> skip;
 ESP : [ \t\r\n]+ -> skip ;

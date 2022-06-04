@@ -337,25 +337,55 @@ public interface SLListener extends ParseTreeListener {
 	 */
 	void exitRef(SLParser.RefContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SLParser#submain}.
+	 * Enter a parse tree produced by {@link SLParser#return}.
 	 * @param ctx the parse tree
 	 */
-	void enterSubmain(SLParser.SubmainContext ctx);
+	void enterReturn(SLParser.ReturnContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SLParser#submain}.
+	 * Exit a parse tree produced by {@link SLParser#return}.
 	 * @param ctx the parse tree
 	 */
-	void exitSubmain(SLParser.SubmainContext ctx);
+	void exitReturn(SLParser.ReturnContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SLParser#submainr}.
+	 * Enter a parse tree produced by {@link SLParser#subheader}.
 	 * @param ctx the parse tree
 	 */
-	void enterSubmainr(SLParser.SubmainrContext ctx);
+	void enterSubheader(SLParser.SubheaderContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SLParser#submainr}.
+	 * Exit a parse tree produced by {@link SLParser#subheader}.
 	 * @param ctx the parse tree
 	 */
-	void exitSubmainr(SLParser.SubmainrContext ctx);
+	void exitSubheader(SLParser.SubheaderContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SLParser#subbody}.
+	 * @param ctx the parse tree
+	 */
+	void enterSubbody(SLParser.SubbodyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SLParser#subbody}.
+	 * @param ctx the parse tree
+	 */
+	void exitSubbody(SLParser.SubbodyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SLParser#subheaderr}.
+	 * @param ctx the parse tree
+	 */
+	void enterSubheaderr(SLParser.SubheaderrContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SLParser#subheaderr}.
+	 * @param ctx the parse tree
+	 */
+	void exitSubheaderr(SLParser.SubheaderrContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SLParser#subbodyr}.
+	 * @param ctx the parse tree
+	 */
+	void enterSubbodyr(SLParser.SubbodyrContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SLParser#subbodyr}.
+	 * @param ctx the parse tree
+	 */
+	void exitSubbodyr(SLParser.SubbodyrContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SLParser#tipo}.
 	 * @param ctx the parse tree

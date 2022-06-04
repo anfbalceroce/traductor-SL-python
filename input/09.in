@@ -1,0 +1,25 @@
+/*
+OBJETIVO: Calcular el cociente de a/b, donde a y b son enteros.
+La division se hace por restas sucesivas.
+AUTOR: desconocido
+OBSERVACION: El autor de este programa no sabe que puede usarse
+cociente = int (a / b)
+Por eso hace un programa largo usando ciclos.
+Ademas, el programa trata de ser comunicativo con el
+usuario para mostrar distintos usos de imprimir().
+*/
+var
+  a, b, cociente : numerico
+inicio
+  imprimir ("\nPrograma para calcular cociente de la division", "entera de dos numeros, ambos enteros.")
+  imprimir ("\nIngrese dos numeros enteros, separados por comas:")
+  a = 111
+  b = 7
+  cociente = 0
+  mientras ( a >= b )
+  {
+    a = a - b
+    cociente = cociente + 1
+  }
+  imprimir ("\nEl cociente es ", a);
+fin

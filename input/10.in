@@ -1,0 +1,3 @@
+inicio
+  imprimir ("Hola mundo!")
+fin

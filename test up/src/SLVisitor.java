@@ -208,17 +208,35 @@ public interface SLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRef(SLParser.RefContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SLParser#submain}.
+	 * Visit a parse tree produced by {@link SLParser#return}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSubmain(SLParser.SubmainContext ctx);
+	T visitReturn(SLParser.ReturnContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SLParser#submainr}.
+	 * Visit a parse tree produced by {@link SLParser#subheader}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSubmainr(SLParser.SubmainrContext ctx);
+	T visitSubheader(SLParser.SubheaderContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SLParser#subbody}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSubbody(SLParser.SubbodyContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SLParser#subheaderr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSubheaderr(SLParser.SubheaderrContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SLParser#subbodyr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSubbodyr(SLParser.SubbodyrContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SLParser#tipo}.
 	 * @param ctx the parse tree
