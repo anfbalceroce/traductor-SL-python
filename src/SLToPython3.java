@@ -4,10 +4,16 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class SLToPython3 extends SLBaseListener {
     public int indents = 0;
-    public void add_indents(){
+    public String header = "";
+    public String functions = "";
+    public String body = "";
+
+    public String add_indents(String code){
         for (int i = 0; i < this.indents; i++){
+            code +='\t';
             System.out.print('\t');
         }
+        return code;
     }
     /**
      * {@inheritDoc}
@@ -39,8 +45,10 @@ public class SLToPython3 extends SLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterVar(SLParser.VarContext ctx) {
+        this.header += ctx.ID(0).getText()+" = ";
         System.out.print(ctx.ID(0).getText()+" = ");
         for (int i = 1; i < ctx.ID().size(); i++) {
+            this.header += ctx.ID(i).getText()+" = ";
             System.out.print(ctx.ID(i).getText()+" = ");
         }
         String type = "";
@@ -57,6 +65,7 @@ public class SLToPython3 extends SLBaseListener {
             default:
                 type = "None";
         }
+        this.header += type + '\n';
         System.out.print(type+'\n');
     }
     /**
@@ -97,7 +106,9 @@ public class SLToPython3 extends SLBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterMain(SLParser.MainContext ctx) { }
+    @Override public void enterMain(SLParser.MainContext ctx) {
+        System.out.print("\n");
+    }
     /**
      * {@inheritDoc}
      *
@@ -110,27 +121,38 @@ public class SLToPython3 extends SLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterSentencia(SLParser.SentenciaContext ctx) {
-        add_indents();
+        this.body = add_indents(this.body);
         String semicolon = "";
         if (ctx.SEP() != null) {
             semicolon = ctx.SEP().getText();
         }
         if (ctx.ID() != null) { // call, assingment o desde
             if (ctx.params() != null) { // call
+                this.body += ctx.ID().getText()+'('+ctx.params().getText()+')'+semicolon+'\n';
                 System.out.print(ctx.ID().getText()+'('+ctx.params().getText()+')'+semicolon+'\n');
             } else if (ctx.expresion(0) != null) { // assingment
+                this.body += ctx.ID().getText()+ctx.id_extend().getText()+" = "+ctx.expresion(0).getText()+semicolon+'\n';
                 System.out.print(ctx.ID().getText()+ctx.id_extend().getText()+" = "+ctx.expresion(0).getText()+semicolon+'\n');
             } else if (ctx.m_expresion() != null) { // matrix assingment
+                this.body += ctx.ID().getText()+ctx.id_extend().getText()+" = "+'['+ctx.m_expresion().getText()+']'+semicolon+'\n';
                 System.out.print(ctx.ID().getText()+ctx.id_extend().getText()+" = "+'['+ctx.m_expresion().getText()+']'+semicolon+'\n');
             } else if (ctx.num_expresion() != null) { // desde hasta
                 String desde = ctx.num_expresion(0).getText();
                 String hasta = ctx.num_expresion(1).getText();
                 if (ctx.num_expresion(2) == null) { // sin paso
+                    this.body += "for "+ctx.ID().getText()+" in range("+desde+", "+hasta+"):"+'\n';
                     System.out.print("for "+ctx.ID().getText()+" in range("+desde+", "+hasta+"):"+'\n');
                 }else { // con paso
                     String paso = ctx.num_expresion(2).getText();
+                    this.body += "for "+ctx.ID().getText()+" in range("+desde+", "+hasta+", "+paso+"):"+'\n';
                     System.out.print("for "+ctx.ID().getText()+" in range("+desde+", "+hasta+", "+paso+"):"+'\n');
                 }
+                this.indents ++;
+            }
+        } else if (ctx.case_() != null) { // eval
+            if (ctx.sentencia(5) != null) { // looks if there's a 'sino' statement
+                this.body += "else:\n";
+                System.out.print("else:\n");
                 this.indents ++;
             }
         }
@@ -140,13 +162,29 @@ public class SLToPython3 extends SLBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void exitSentencia(SLParser.SentenciaContext ctx) { }
+    @Override public void exitSentencia(SLParser.SentenciaContext ctx) {
+        if (ctx.ID() != null) { // call, assingment o desde
+            if (ctx.params() != null) { // call
+            } else if (ctx.expresion(0) != null) { // assingment
+            } else if (ctx.m_expresion() != null) { // matrix assingment
+            } else if (ctx.num_expresion() != null) { // desde hasta
+                this.indents --;
+            }
+        }else if (ctx.case_() != null) { // eval
+            if (ctx.sentencia(5) != null) { // looks if there's a 'sino' statement
+                this.indents --;
+            }
+        }
+    }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterCase(SLParser.CaseContext ctx) { }
+    @Override public void enterCase(SLParser.CaseContext ctx) {
+        this.body = add_indents(this.body);
+        System.out.println("here");
+    }
     /**
      * {@inheritDoc}
      *

@@ -3,7 +3,11 @@ a, b, c : numerico
 inicio
 a = 0
 a()
-desde a = 0 hasta 3 paso 4 {
-    a()
+eval {
+    caso (TRUE)
+        b()
+    sino
+        c()
 }
+a = a + a
 fin

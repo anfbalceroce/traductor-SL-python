@@ -17,9 +17,12 @@ public class Main {
             SLParser parser = new SLParser(tokens);
             ParseTree tree = parser.start(); // Iniciar el analisis sintáctico en la regla inicial: start
             ParseTreeWalker walker = new ParseTreeWalker();
-            walker.walk(new SLToPython3(), tree);
-            //System.out.println(tree.toStringTree(parser)); // imprime el arbol al estilo LISP
-            //System.out.println("El analisis sintactico ha finalizado exitosamente.");
+            SLToPython3 tl = new SLToPython3();
+            walker.walk(tl, tree);
+            System.out.println("========================================");
+            System.out.println(tl.header); //
+            System.out.println(tl.functions); //
+            System.out.println(tl.body); //
         } catch (Exception e){
             System.err.println("Error (Test): " + e);
         }
