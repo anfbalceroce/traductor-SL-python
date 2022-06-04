@@ -70,6 +70,12 @@ public interface SLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIf(SLParser.IfContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link SLParser#sinosi}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSinosi(SLParser.SinosiContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link SLParser#while}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

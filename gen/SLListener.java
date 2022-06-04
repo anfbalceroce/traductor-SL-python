@@ -107,6 +107,16 @@ public interface SLListener extends ParseTreeListener {
 	 */
 	void exitIf(SLParser.IfContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link SLParser#sinosi}.
+	 * @param ctx the parse tree
+	 */
+	void enterSinosi(SLParser.SinosiContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SLParser#sinosi}.
+	 * @param ctx the parse tree
+	 */
+	void exitSinosi(SLParser.SinosiContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link SLParser#while}.
 	 * @param ctx the parse tree
 	 */

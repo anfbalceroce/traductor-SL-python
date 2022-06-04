@@ -17,7 +17,8 @@ sentencia : call SEP?
 
 call :  ID '(' params ')' ;
 assingment : ID id_extend '=' (expresion  | '{' m_expresion '}')  ;
-if :  'si' '(' expresion ')' '{' sentencia+ ('sino' 'si' '(' expresion ')' sentencia+)* ('sino' sentencia+)? '}';
+if :  'si' '(' expresion ')' '{' sentencia+ sinosi* sino? '}';
+sinosi : 'sino' 'si' '(' expresion ')' sentencia+ ;
 while : 'mientras' '(' expresion ')' '{' sentencia+ '}' ;
 do_while : 'repetir' sentencia+ 'hasta' '(' expresion ')' ;
 switch : 'eval' '{' 'caso' '(' expresion ')' sentencia+ case* sino? '}' ;

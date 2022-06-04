@@ -155,13 +155,37 @@ public class SLToPython3 extends SLBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterIf(SLParser.IfContext ctx) { }
+    @Override public void enterIf(SLParser.IfContext ctx) {
+        this.current_body += "if ("+ctx.expresion().getText()+"):\n";
+        System.out.print("if ("+ctx.expresion().getText()+"):\n");
+        this.indents ++;
+    }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void exitIf(SLParser.IfContext ctx) { }
+    @Override public void exitIf(SLParser.IfContext ctx) {
+        this.indents --;
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void enterSinosi(SLParser.SinosiContext ctx) {
+        this.indents --;
+        this.current_body = add_indents(this.current_body);
+        this.current_body += "elif ("+ctx.expresion().getText()+"):\n";
+        System.out.print("elif ("+ctx.expresion().getText()+"):\n");
+        this.indents ++;
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void exitSinosi(SLParser.SinosiContext ctx) { }
     /**
      * {@inheritDoc}
      *
