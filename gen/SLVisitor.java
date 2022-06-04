@@ -52,11 +52,59 @@ public interface SLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSentencia(SLParser.SentenciaContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link SLParser#call}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCall(SLParser.CallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SLParser#assingment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAssingment(SLParser.AssingmentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SLParser#if}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIf(SLParser.IfContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SLParser#while}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhile(SLParser.WhileContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SLParser#do_while}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDo_while(SLParser.Do_whileContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SLParser#switch}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSwitch(SLParser.SwitchContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link SLParser#case}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitCase(SLParser.CaseContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SLParser#sino}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSino(SLParser.SinoContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SLParser#for}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFor(SLParser.ForContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SLParser#m_expresion}.
 	 * @param ctx the parse tree
@@ -291,18 +339,6 @@ public interface SLVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitIds_options(SLParser.Ids_optionsContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SLParser#call}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCall(SLParser.CallContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SLParser#call_opt}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCall_opt(SLParser.Call_optContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SLParser#params}.
 	 * @param ctx the parse tree

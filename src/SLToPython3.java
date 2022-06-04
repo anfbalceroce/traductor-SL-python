@@ -7,6 +7,8 @@ public class SLToPython3 extends SLBaseListener {
     public String header = "";
     public String functions = "";
     public String body = "";
+    public String function_body = "";
+    public String current_body = "";
 
     public String add_indents(String code){
         for (int i = 0; i < this.indents; i++){
@@ -15,18 +17,6 @@ public class SLToPython3 extends SLBaseListener {
         }
         return code;
     }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterStart(SLParser.StartContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitStart(SLParser.StartContext ctx) { }
     /**
      * {@inheritDoc}
      *
@@ -93,19 +83,6 @@ public class SLToPython3 extends SLBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterTipo_p(SLParser.Tipo_pContext ctx) {
-    }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitTipo_p(SLParser.Tipo_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
     @Override public void enterMain(SLParser.MainContext ctx) {
         System.out.print("\n");
     }
@@ -114,48 +91,16 @@ public class SLToPython3 extends SLBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void exitMain(SLParser.MainContext ctx) { }
+    @Override public void exitMain(SLParser.MainContext ctx) {
+        this.body = this.current_body;
+    }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterSentencia(SLParser.SentenciaContext ctx) {
-        this.body = add_indents(this.body);
-        String semicolon = "";
-        if (ctx.SEP() != null) {
-            semicolon = ctx.SEP().getText();
-        }
-        if (ctx.ID() != null) { // call, assingment o desde
-            if (ctx.params() != null) { // call
-                this.body += ctx.ID().getText()+'('+ctx.params().getText()+')'+semicolon+'\n';
-                System.out.print(ctx.ID().getText()+'('+ctx.params().getText()+')'+semicolon+'\n');
-            } else if (ctx.expresion(0) != null) { // assingment
-                this.body += ctx.ID().getText()+ctx.id_extend().getText()+" = "+ctx.expresion(0).getText()+semicolon+'\n';
-                System.out.print(ctx.ID().getText()+ctx.id_extend().getText()+" = "+ctx.expresion(0).getText()+semicolon+'\n');
-            } else if (ctx.m_expresion() != null) { // matrix assingment
-                this.body += ctx.ID().getText()+ctx.id_extend().getText()+" = "+'['+ctx.m_expresion().getText()+']'+semicolon+'\n';
-                System.out.print(ctx.ID().getText()+ctx.id_extend().getText()+" = "+'['+ctx.m_expresion().getText()+']'+semicolon+'\n');
-            } else if (ctx.num_expresion() != null) { // desde hasta
-                String desde = ctx.num_expresion(0).getText();
-                String hasta = ctx.num_expresion(1).getText();
-                if (ctx.num_expresion(2) == null) { // sin paso
-                    this.body += "for "+ctx.ID().getText()+" in range("+desde+", "+hasta+"):"+'\n';
-                    System.out.print("for "+ctx.ID().getText()+" in range("+desde+", "+hasta+"):"+'\n');
-                }else { // con paso
-                    String paso = ctx.num_expresion(2).getText();
-                    this.body += "for "+ctx.ID().getText()+" in range("+desde+", "+hasta+", "+paso+"):"+'\n';
-                    System.out.print("for "+ctx.ID().getText()+" in range("+desde+", "+hasta+", "+paso+"):"+'\n');
-                }
-                this.indents ++;
-            }
-        } else if (ctx.case_() != null) { // eval
-            if (ctx.sentencia(5) != null) { // looks if there's a 'sino' statement
-                this.body += "else:\n";
-                System.out.print("else:\n");
-                this.indents ++;
-            }
-        }
+        this.current_body = add_indents(this.current_body);
     }
     /**
      * {@inheritDoc}
@@ -163,508 +108,22 @@ public class SLToPython3 extends SLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void exitSentencia(SLParser.SentenciaContext ctx) {
-        if (ctx.ID() != null) { // call, assingment o desde
-            if (ctx.params() != null) { // call
-            } else if (ctx.expresion(0) != null) { // assingment
-            } else if (ctx.m_expresion() != null) { // matrix assingment
-            } else if (ctx.num_expresion() != null) { // desde hasta
-                this.indents --;
-            }
-        }else if (ctx.case_() != null) { // eval
-            if (ctx.sentencia(5) != null) { // looks if there's a 'sino' statement
-                this.indents --;
-            }
+        String semicolon = "";
+        if (ctx.SEP() != null) {
+            semicolon = ctx.SEP().getText();
         }
+        this.current_body += semicolon+'\n';
+        System.out.print(semicolon+'\n');
     }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterCase(SLParser.CaseContext ctx) {
-        this.body = add_indents(this.body);
-        System.out.println("here");
+    @Override public void enterCall(SLParser.CallContext ctx) { // aca seria la traduccion de primitivas de SL a python
+        this.current_body += ctx.ID().getText()+'('+ctx.params().getText()+')';
+        System.out.print(ctx.ID().getText()+'('+ctx.params().getText()+')');
     }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitCase(SLParser.CaseContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterM_expresion(SLParser.M_expresionContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitM_expresion(SLParser.M_expresionContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterM_expresion_p(SLParser.M_expresion_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitM_expresion_p(SLParser.M_expresion_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterM_term(SLParser.M_termContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitM_term(SLParser.M_termContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterM_factor(SLParser.M_factorContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitM_factor(SLParser.M_factorContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterExpresion(SLParser.ExpresionContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitExpresion(SLParser.ExpresionContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterLogic_expresion_p(SLParser.Logic_expresion_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitLogic_expresion_p(SLParser.Logic_expresion_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterLogic_term(SLParser.Logic_termContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitLogic_term(SLParser.Logic_termContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterLogic_term_p(SLParser.Logic_term_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitLogic_term_p(SLParser.Logic_term_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterLogic_factor(SLParser.Logic_factorContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitLogic_factor(SLParser.Logic_factorContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterLogic_element(SLParser.Logic_elementContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitLogic_element(SLParser.Logic_elementContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterRelation_expresion(SLParser.Relation_expresionContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitRelation_expresion(SLParser.Relation_expresionContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterRelation_expresion_p(SLParser.Relation_expresion_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitRelation_expresion_p(SLParser.Relation_expresion_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterRelation_term(SLParser.Relation_termContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitRelation_term(SLParser.Relation_termContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterNum_expresion(SLParser.Num_expresionContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitNum_expresion(SLParser.Num_expresionContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterNum_expresion_p(SLParser.Num_expresion_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitNum_expresion_p(SLParser.Num_expresion_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterNum_term(SLParser.Num_termContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitNum_term(SLParser.Num_termContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterNum_term_p(SLParser.Num_term_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitNum_term_p(SLParser.Num_term_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterNum_factor(SLParser.Num_factorContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitNum_factor(SLParser.Num_factorContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterNum_factor_p(SLParser.Num_factor_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitNum_factor_p(SLParser.Num_factor_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterNum_factor_pp(SLParser.Num_factor_ppContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitNum_factor_pp(SLParser.Num_factor_ppContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterBase_element(SLParser.Base_elementContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitBase_element(SLParser.Base_elementContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterSub(SLParser.SubContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitSub(SLParser.SubContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterArgs(SLParser.ArgsContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitArgs(SLParser.ArgsContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterNext_arg(SLParser.Next_argContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitNext_arg(SLParser.Next_argContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterRef(SLParser.RefContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitRef(SLParser.RefContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterSubmain(SLParser.SubmainContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitSubmain(SLParser.SubmainContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterSubmainr(SLParser.SubmainrContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitSubmainr(SLParser.SubmainrContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterTipo(SLParser.TipoContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitTipo(SLParser.TipoContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterTipos(SLParser.TiposContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitTipos(SLParser.TiposContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterType_vector(SLParser.Type_vectorContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitType_vector(SLParser.Type_vectorContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterV_len(SLParser.V_lenContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitV_len(SLParser.V_lenContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterType_matrix(SLParser.Type_matrixContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitType_matrix(SLParser.Type_matrixContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterDimention_list(SLParser.Dimention_listContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitDimention_list(SLParser.Dimention_listContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterNext_dimention(SLParser.Next_dimentionContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitNext_dimention(SLParser.Next_dimentionContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterNext_dimention_p(SLParser.Next_dimention_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitNext_dimention_p(SLParser.Next_dimention_pContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterDimention(SLParser.DimentionContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitDimention(SLParser.DimentionContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterRegister(SLParser.RegisterContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitRegister(SLParser.RegisterContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterId_extend(SLParser.Id_extendContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitId_extend(SLParser.Id_extendContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterIds_options(SLParser.Ids_optionsContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitIds_options(SLParser.Ids_optionsContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterCall(SLParser.CallContext ctx) { }
     /**
      * {@inheritDoc}
      *
@@ -676,72 +135,137 @@ public class SLToPython3 extends SLBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterCall_opt(SLParser.Call_optContext ctx) { }
+    @Override public void enterAssingment(SLParser.AssingmentContext ctx) {
+        if (ctx.expresion() != null) { // assingment
+            this.current_body += ctx.ID().getText()+ctx.id_extend().getText()+" = "+ctx.expresion().getText();
+            System.out.print(ctx.ID().getText()+ctx.id_extend().getText()+" = "+ctx.expresion().getText());
+        } else if (ctx.m_expresion() != null) { // matrix assingment
+            this.current_body += ctx.ID().getText()+ctx.id_extend().getText()+" = "+'['+ctx.m_expresion().getText()+']';
+            System.out.print(ctx.ID().getText()+ctx.id_extend().getText()+" = "+'['+ctx.m_expresion().getText()+']');
+        }
+    }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void exitCall_opt(SLParser.Call_optContext ctx) { }
+    @Override public void exitAssingment(SLParser.AssingmentContext ctx) { }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterParams(SLParser.ParamsContext ctx) { }
+    @Override public void enterIf(SLParser.IfContext ctx) { }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void exitParams(SLParser.ParamsContext ctx) { }
+    @Override public void exitIf(SLParser.IfContext ctx) { }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterNext_param(SLParser.Next_paramContext ctx) { }
+    @Override public void enterWhile(SLParser.WhileContext ctx) { }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void exitNext_param(SLParser.Next_paramContext ctx) { }
+    @Override public void exitWhile(SLParser.WhileContext ctx) { }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterMatrix(SLParser.MatrixContext ctx) { }
+    @Override public void enterDo_while(SLParser.Do_whileContext ctx) { }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void exitMatrix(SLParser.MatrixContext ctx) { }
-
+    @Override public void exitDo_while(SLParser.Do_whileContext ctx) { }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterEveryRule(ParserRuleContext ctx) { }
+    @Override public void enterSwitch(SLParser.SwitchContext ctx) { // eval
+        this.current_body += "if ("+ctx.expresion().getText()+"):\n";
+        System.out.print("if ("+ctx.expresion().getText()+"):\n");
+        this.indents ++;
+    }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void exitEveryRule(ParserRuleContext ctx) { }
+    @Override public void exitSwitch(SLParser.SwitchContext ctx) {
+        this.indents --;
+    }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void visitTerminal(TerminalNode node) { }
+    @Override public void enterCase(SLParser.CaseContext ctx) {
+        this.indents --;
+        this.current_body = add_indents(this.current_body);
+        this.current_body += "elif ("+ctx.expresion().getText()+"):\n";
+        System.out.print("elif ("+ctx.expresion().getText()+"):\n");
+        this.indents ++;
+    }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void visitErrorNode(ErrorNode node) { }
+    @Override public void exitCase(SLParser.CaseContext ctx) {
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void enterSino(SLParser.SinoContext ctx) {
+        this.indents --;
+        this.current_body = add_indents(this.current_body);
+        this.current_body += "else:\n";
+        System.out.print("else:\n");
+        this.indents ++;
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void exitSino(SLParser.SinoContext ctx) {
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void enterFor(SLParser.ForContext ctx) {
+        String desde = ctx.num_expresion(0).getText();
+        String hasta = ctx.num_expresion(1).getText();
+        if (ctx.num_expresion(2) == null) { // sin paso
+            this.current_body += "for "+ctx.ID().getText()+" in range("+desde+", "+hasta+"):"+'\n';
+            System.out.print("for "+ctx.ID().getText()+" in range("+desde+", "+hasta+"):"+'\n');
+        }else { // con paso
+            String paso = ctx.num_expresion(2).getText();
+            this.current_body += "for "+ctx.ID().getText()+" in range("+desde+", "+hasta+", "+paso+"):"+'\n';
+            System.out.print("for "+ctx.ID().getText()+" in range("+desde+", "+hasta+", "+paso+"):"+'\n');
+        }
+        this.indents ++;
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void exitFor(SLParser.ForContext ctx) {
+        this.indents --;
+    }
 }

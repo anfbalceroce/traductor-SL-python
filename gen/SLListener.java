@@ -77,6 +77,66 @@ public interface SLListener extends ParseTreeListener {
 	 */
 	void exitSentencia(SLParser.SentenciaContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link SLParser#call}.
+	 * @param ctx the parse tree
+	 */
+	void enterCall(SLParser.CallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SLParser#call}.
+	 * @param ctx the parse tree
+	 */
+	void exitCall(SLParser.CallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SLParser#assingment}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssingment(SLParser.AssingmentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SLParser#assingment}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssingment(SLParser.AssingmentContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SLParser#if}.
+	 * @param ctx the parse tree
+	 */
+	void enterIf(SLParser.IfContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SLParser#if}.
+	 * @param ctx the parse tree
+	 */
+	void exitIf(SLParser.IfContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SLParser#while}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhile(SLParser.WhileContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SLParser#while}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhile(SLParser.WhileContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SLParser#do_while}.
+	 * @param ctx the parse tree
+	 */
+	void enterDo_while(SLParser.Do_whileContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SLParser#do_while}.
+	 * @param ctx the parse tree
+	 */
+	void exitDo_while(SLParser.Do_whileContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SLParser#switch}.
+	 * @param ctx the parse tree
+	 */
+	void enterSwitch(SLParser.SwitchContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SLParser#switch}.
+	 * @param ctx the parse tree
+	 */
+	void exitSwitch(SLParser.SwitchContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link SLParser#case}.
 	 * @param ctx the parse tree
 	 */
@@ -86,6 +146,26 @@ public interface SLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCase(SLParser.CaseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SLParser#sino}.
+	 * @param ctx the parse tree
+	 */
+	void enterSino(SLParser.SinoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SLParser#sino}.
+	 * @param ctx the parse tree
+	 */
+	void exitSino(SLParser.SinoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SLParser#for}.
+	 * @param ctx the parse tree
+	 */
+	void enterFor(SLParser.ForContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SLParser#for}.
+	 * @param ctx the parse tree
+	 */
+	void exitFor(SLParser.ForContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SLParser#m_expresion}.
 	 * @param ctx the parse tree
@@ -476,26 +556,6 @@ public interface SLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIds_options(SLParser.Ids_optionsContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link SLParser#call}.
-	 * @param ctx the parse tree
-	 */
-	void enterCall(SLParser.CallContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SLParser#call}.
-	 * @param ctx the parse tree
-	 */
-	void exitCall(SLParser.CallContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link SLParser#call_opt}.
-	 * @param ctx the parse tree
-	 */
-	void enterCall_opt(SLParser.Call_optContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SLParser#call_opt}.
-	 * @param ctx the parse tree
-	 */
-	void exitCall_opt(SLParser.Call_optContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SLParser#params}.
 	 * @param ctx the parse tree

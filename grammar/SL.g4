@@ -7,15 +7,24 @@ const : ID '=' expresion (';' | /* epsilon */)  ;
 tipo_p : ID ':' tipo (';' | /* epsilon */)  ;
 
 main : 'inicio' sentencia* 'fin' ;
-sentencia : ID '(' params ')' SEP?
-          | ID id_extend '=' (expresion  | '{' m_expresion '}') SEP?
-          | 'si' '(' expresion ')' '{' sentencia+ ('sino' 'si' '(' expresion ')' sentencia+)* ('sino' sentencia+)? '}' SEP?
-          | 'mientras' '(' expresion ')' '{' sentencia+ '}' SEP?
-          | 'repetir' sentencia+ 'hasta' '(' expresion ')' SEP?
-          | 'eval' '{' case+ ('sino' sentencia+)? '}' SEP?
-          | 'desde' ID '=' num_expresion 'hasta' num_expresion ('paso' num_expresion)? '{' sentencia+ '}' SEP? ;
+sentencia : call SEP?
+          | assingment SEP?
+          | if SEP?
+          | while SEP?
+          | do_while SEP?
+          | switch SEP?
+          | for SEP? ;
 
+call :  ID '(' params ')' ;
+assingment : ID id_extend '=' (expresion  | '{' m_expresion '}')  ;
+if :  'si' '(' expresion ')' '{' sentencia+ ('sino' 'si' '(' expresion ')' sentencia+)* ('sino' sentencia+)? '}';
+while : 'mientras' '(' expresion ')' '{' sentencia+ '}' ;
+do_while : 'repetir' sentencia+ 'hasta' '(' expresion ')' ;
+switch : 'eval' '{' 'caso' '(' expresion ')' sentencia+ case* sino? '}' ;
 case : 'caso' '(' expresion ')' sentencia+ ;
+sino : 'sino' sentencia+ ;
+for : 'desde' ID '=' num_expresion 'hasta' num_expresion ('paso' num_expresion)? '{' sentencia+ '}' ;
+
 
 m_expresion : m_term m_expresion_p  | /* epsilon */  ;
 m_expresion_p : ',' m_term m_expresion_p  | /* epsilon */  ;
@@ -37,7 +46,7 @@ num_term_p : '*' num_factor num_term_p  | '/' num_factor num_term_p  | '%' num_f
 num_factor : num_factor_p  | '+' num_factor_p  | '-' num_factor_p  ;
 num_factor_p : base_element num_factor_pp  ;
 num_factor_pp : '^' base_element num_factor_pp  | /* epsilon */  ;
-base_element : STRING  | NUM  | '(' expresion ')'  | call  ;
+base_element : STRING  | NUM  | '(' expresion ')'  | call  | ID id_extend;
 
 sub : 'subrutina' ID '(' args ')' (header* submain | 'retorna' tipo header* submainr)  ;
 args : ref ID (',' ID)* ':' tipo next_arg  | /* epsilon */  ;
@@ -58,10 +67,10 @@ next_dimention_p : '*' next_dimention  | dimention next_dimention  ;
 dimention : ID  | NUM  ;
 
 register : 'registro' '{' var+ '}'  ;
+
 id_extend : ids_options id_extend  | /* epsilon */  ;
 ids_options : '[' num_expresion matrix ']'  | '.' ID  ;
-call : ID call_opt  ;
-call_opt : '(' params ')'  | id_extend  ;
+
 params : expresion next_param  | /* epsilon */  ;
 next_param : ',' expresion next_param  | /* epsilon */  ;
 matrix : ',' num_expresion matrix  | /* epsilon */  ;

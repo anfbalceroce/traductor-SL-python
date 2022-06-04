@@ -1,7 +1,7 @@
 var
 a, b, c : numerico
 inicio
-a = 0
+a = 0;
 a()
 eval {
     caso (TRUE)
