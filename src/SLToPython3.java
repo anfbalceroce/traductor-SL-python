@@ -25,14 +25,23 @@ public class SLToPython3 extends SLBaseListener {
         return code;
     }
     public String expresionMngr(String raw){
-        SLLexer miniLex = new SLLexer(CharStreams.fromString(raw));
+        // formats and translate expresions, receives raw string of concat tokens (no whitespaces)
+        // returns string of concatenated tokens, spaced and translated if necessary
+        SLLexer miniLex = new SLLexer(CharStreams.fromString(raw)); // mini lexer to identify tokens
         String out = "";
-        Vocabulary vocab = miniLex.getVocabulary();
-        for (Token tok : miniLex.getAllTokens()){
-            String tokType = vocab.getSymbolicName(tok.getType());
+        Vocabulary vocab = miniLex.getVocabulary(); // get names of Token types, ej ID, NUM, etc
+        for (Token tok : miniLex.getAllTokens()){ // iterates over all tokens from input
+            String tokType = vocab.getSymbolicName(tok.getType()); // get token type
             if (tokType != null && tokType.equals("ID") && this.prebuilts.containsKey(tok.getText())){
+                // if token is ID ant it's a prebuilt (HashMap check) concatenates the translation
                 out += ' '+this.prebuilts.get(tok.getText())+' ';
-            } else {
+            } else if (tok.getText().equals("TRUE") || tok.getText().equals("SI")) {
+                // if token is TRUE or SI > True
+                out += " True ";
+            }else if (tok.getText().equals("FALSE") || tok.getText().equals("NO")) {
+                // if token is FALSE or No > True
+                out += " False ";
+            }else {
                 out += ' '+tok.getText()+' ';
             }
 
@@ -117,7 +126,7 @@ public class SLToPython3 extends SLBaseListener {
                 type = "0";
                 break;
             case "logico":
-                type = "FALSE";
+                type = "False";
                 break;
             case "cadena":
                 type = "\"\"";
@@ -294,13 +303,38 @@ public class SLToPython3 extends SLBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterDo_while(SLParser.Do_whileContext ctx) { }
+    @Override public void enterDo_while(SLParser.Do_whileContext ctx) {
+        if(ctx.expresion()!=null){
+
+            this.current_body+="while "+"True"+":"+'\n';
+            System.out.print("while "+"True"+":"+'\n');
+            this.indents++;
+
+            //this.current_body+=ctx.sentencia();
+
+        }
+    }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void exitDo_while(SLParser.Do_whileContext ctx) { }
+    @Override public void exitDo_while(SLParser.Do_whileContext ctx) {
+        //this.indents++;
+        this.current_body = add_indents(this.current_body);
+        this.current_body+="if("+ctx.expresion().getText()+"):"+'\n';
+        System.out.print("if("+ctx.expresion().getText()+"):"+'\n');
+
+        this.indents++;
+        this.current_body = add_indents(this.current_body);
+
+        this.current_body+="break";
+        System.out.print("break");
+
+        this.indents--;
+        this.indents--;
+
+    }
     /**
      * {@inheritDoc}
      *
