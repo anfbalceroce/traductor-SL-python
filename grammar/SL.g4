@@ -51,8 +51,7 @@ num_factor_pp : '^' base_element num_factor_pp  | /* epsilon */  ;
 base_element : STRING  | NUM  | '(' expresion ')'  | calls  | ID id_extend;
 
 sub : 'subrutina' ID '(' args ')' (header* submain | 'retorna' tipo header* submainr)  ;
-args : ref ID (',' ID)* ':' tipo next_arg  | /* epsilon */  ;
-next_arg : ';' ref ID (',' ID)* ':' tipo next_arg  | /* epsilon */  ;
+args : ref ID (',' ID)* ':' tipo (';' ref ID (',' ID)* ':' tipo)*  | /* epsilon */  ;
 ref : 'ref'  | /* epsilon */  ;
 
 submain : 'inicio' sentencia+ 'fin' ;

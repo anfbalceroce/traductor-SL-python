@@ -507,18 +507,6 @@ public class SLBaseListener implements SLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNext_arg(SLParser.Next_argContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitNext_arg(SLParser.Next_argContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterRef(SLParser.RefContext ctx) { }
 	/**
 	 * {@inheritDoc}

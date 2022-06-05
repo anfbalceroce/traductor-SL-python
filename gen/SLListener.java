@@ -417,16 +417,6 @@ public interface SLListener extends ParseTreeListener {
 	 */
 	void exitArgs(SLParser.ArgsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SLParser#next_arg}.
-	 * @param ctx the parse tree
-	 */
-	void enterNext_arg(SLParser.Next_argContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SLParser#next_arg}.
-	 * @param ctx the parse tree
-	 */
-	void exitNext_arg(SLParser.Next_argContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link SLParser#ref}.
 	 * @param ctx the parse tree
 	 */

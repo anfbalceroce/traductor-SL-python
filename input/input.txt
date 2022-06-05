@@ -1,26 +1,9 @@
 inicio
-  imprimir ("\nSuma de numeros pares entre 1 y n.\nPor favor ",
-            "ingrese un valor para n: ")
-
-  repetir
-    n = n + 5;
-    f = TRUE
-  hasta ( n > 11 )
-  n = 20 + abs(20) // Omitimos el leer(n)
-  suma = 0
-  desde k=2 hasta n paso 2  // Comentario ciclo desde ... hasta
-  {
-    suma = suma + k
-  }
-  imprimir ("\nLa suma es ", suma)
+  imprimir ()
 fin
 
-subrutina mi_sub (a : numerico; ref b : numerico)
-/*
-    a se recibe por valor, pero b por referencia.
-*/
+subrutina mi_sub (a,b : numerico; ref c : numerico) retorna numerico
 inicio
-    a = 5
-    b = b * 5
-    imprimir ( "\n", a, ' ', b)
+    a()
+    retorna (a)
 fin

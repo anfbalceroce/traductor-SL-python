@@ -119,6 +119,7 @@ public class SLToPython3 extends SLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterVar(SLParser.VarContext ctx) {
+        this.current_body = add_indents(this.current_body);
         this.current_body += ctx.ID(0).getText()+" = ";
         System.out.print(ctx.ID(0).getText()+" = ");
         for (int i = 1; i < ctx.ID().size(); i++) {
@@ -154,6 +155,7 @@ public class SLToPython3 extends SLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterConst(SLParser.ConstContext ctx) {
+        this.current_body = add_indents(this.current_body);
         this.current_body += ctx.ID().getText()+" = "+expresionMngr(ctx.expresion().getText())+'\n';
         System.out.print(ctx.ID().getText()+" = "+expresionMngr(ctx.expresion().getText())+'\n');
     }
@@ -455,7 +457,7 @@ public class SLToPython3 extends SLBaseListener {
         }
         temp += "):\n";
         this.current_body += temp;
-        System.out.println(temp);
+        System.out.print(temp);
         this.indents ++;
     }
     /**
@@ -465,6 +467,17 @@ public class SLToPython3 extends SLBaseListener {
      */
     @Override public void exitSub(SLParser.SubContext ctx) {
         this.functions += this.current_body+'\n';
+        System.out.print('\n');
         this.indents --;
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void exitSubmainr(SLParser.SubmainrContext ctx) {
+        this.current_body = add_indents(this.current_body);
+        this.current_body += "return ("+expresionMngr(ctx.expresion().getText())+")";
+        System.out.print("return ("+expresionMngr(ctx.expresion().getText())+")");
     }
 }

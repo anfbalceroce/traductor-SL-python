@@ -256,12 +256,6 @@ public interface SLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArgs(SLParser.ArgsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SLParser#next_arg}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNext_arg(SLParser.Next_argContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SLParser#ref}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
