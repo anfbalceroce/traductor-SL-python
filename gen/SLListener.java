@@ -277,6 +277,16 @@ public interface SLListener extends ParseTreeListener {
 	 */
 	void exitLogic_element(SLParser.Logic_elementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link SLParser#bool}.
+	 * @param ctx the parse tree
+	 */
+	void enterBool(SLParser.BoolContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SLParser#bool}.
+	 * @param ctx the parse tree
+	 */
+	void exitBool(SLParser.BoolContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link SLParser#relation_expresion}.
 	 * @param ctx the parse tree
 	 */
@@ -446,6 +456,16 @@ public interface SLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSubmainr(SLParser.SubmainrContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SLParser#calls}.
+	 * @param ctx the parse tree
+	 */
+	void enterCalls(SLParser.CallsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SLParser#calls}.
+	 * @param ctx the parse tree
+	 */
+	void exitCalls(SLParser.CallsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SLParser#tipo}.
 	 * @param ctx the parse tree

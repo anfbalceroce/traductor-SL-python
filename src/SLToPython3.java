@@ -191,13 +191,28 @@ public class SLToPython3 extends SLBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterWhile(SLParser.WhileContext ctx) { }
+    @Override public void enterWhile(SLParser.WhileContext ctx) {
+        if(ctx.expresion()!=null){
+            this.current_body += "while "+ctx.expresion().getText()+":"+'\n';
+            System.out.print("while "+ctx.expresion().getText()+":"+'\n');
+            this.indents ++;
+        }
+    }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void exitWhile(SLParser.WhileContext ctx) { }
+    @Override public void exitWhile(SLParser.WhileContext ctx) {
+        try {
+            this.current_body = this.current_body.substring(0, this.current_body.length() - 1);
+
+        }
+        catch (Exception e) {
+            System.err.println("Error (Test): " + e);
+        }
+        this.indents --;
+    }
     /**
      * {@inheritDoc}
      *
@@ -265,6 +280,12 @@ public class SLToPython3 extends SLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void exitSino(SLParser.SinoContext ctx) {
+        try {
+            this.current_body = this.current_body.substring(0, this.current_body.length() - 1);
+        }
+        catch (Exception e) {
+            System.err.println("Error (Test): " + e);
+        }
     }
     /**
      * {@inheritDoc}
@@ -290,6 +311,24 @@ public class SLToPython3 extends SLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void exitFor(SLParser.ForContext ctx) {
+        try {
+            this.current_body = this.current_body.substring(0, this.current_body.length() - 1);
+        }
+        catch (Exception e) {
+            System.err.println("Error (Test): " + e);
+        }
         this.indents --;
     }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void enterExpresion(SLParser.ExpresionContext ctx) { }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void exitExpresion(SLParser.ExpresionContext ctx) { }
 }

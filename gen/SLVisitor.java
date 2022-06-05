@@ -172,6 +172,12 @@ public interface SLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLogic_element(SLParser.Logic_elementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link SLParser#bool}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBool(SLParser.BoolContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link SLParser#relation_expresion}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -273,6 +279,12 @@ public interface SLVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSubmainr(SLParser.SubmainrContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SLParser#calls}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCalls(SLParser.CallsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SLParser#tipo}.
 	 * @param ctx the parse tree
