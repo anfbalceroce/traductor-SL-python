@@ -4,12 +4,16 @@ import java.io.File;
 import java.io.PrintWriter;
 
 public class Main {
+
+    public static String raw_input;
     public static void main(String[] args) throws Exception {
         try{
             // crear un analizador léxico que se alimenta a partir de la entrada (archivo  o consola)
             SLLexer lexer;
-            if (args.length>0)
+            if (args.length>0) {
                 lexer = new SLLexer(CharStreams.fromFileName(args[0]));
+                raw_input = CharStreams.fromFileName(args[0]).toString();
+            }
             else
                 lexer = new SLLexer(CharStreams.fromStream(System.in));
             // Identificar al analizador léxico como fuente de tokens para el sintactico
@@ -25,9 +29,10 @@ public class Main {
             System.out.print(tl.functions); //
             System.out.print(tl.body); //
             PrintWriter writer = new PrintWriter("output/out.py", "UTF-8");
-            writer.print(tl.header); //
-            writer.print(tl.functions); //
-            writer.print(tl.body); //
+            writer.print(raw_input.substring(12,24+1));
+            //writer.print(tl.header); //
+            //writer.print(tl.functions); //
+            //writer.print(tl.body); //
             writer.close();
         } catch (Exception e){
             System.err.println("Error (Test): " + e);

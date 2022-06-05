@@ -30,6 +30,7 @@ public class SLToPython3 extends SLBaseListener {
         String out = "";
         Vocabulary vocab = miniLex.getVocabulary(); // get names of Token types, ej ID, NUM, etc
         for (Token tok : miniLex.getAllTokens()){ // iterates over all tokens from input
+            //System.out.println(tok.getText());
             String tokType = vocab.getSymbolicName(tok.getType()); // get token type
             if (tokType != null && tokType.equals("ID") && this.prebuilts.containsKey(tok.getText())){
                 // if token is ID ant it's a prebuilt (HashMap check) concatenates the translation
@@ -230,13 +231,15 @@ public class SLToPython3 extends SLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterAssingment(SLParser.AssingmentContext ctx) {
+        String raw_expr = "";
         if (ctx.expresion() != null) { // assingment
-            this.current_body += ctx.ID().getText()+ctx.id_extend().getText()+" = "+expresionMngr(ctx.expresion().getText());
-            System.out.print(ctx.ID().getText()+ctx.id_extend().getText()+" = "+expresionMngr(ctx.expresion().getText()));
+            // get substring (of the expresion) from raw_input
+            raw_expr = Main.raw_input.substring(ctx.expresion().getStart().getStartIndex(),ctx.expresion().getStop().getStopIndex()+1);
         } else if (ctx.m_expresion() != null) { // matrix assingment
-            this.current_body += ctx.ID().getText()+ctx.id_extend().getText()+" = "+expresionMngr(ctx.m_expresion().getText());
-            System.out.print(ctx.ID().getText()+ctx.id_extend().getText()+" = "+expresionMngr(ctx.m_expresion().getText()));
+            raw_expr = Main.raw_input.substring(ctx.m_expresion().getStart().getStartIndex(),ctx.m_expresion().getStop().getStopIndex()+1);
         }
+        raw_expr = Main.raw_input.substring(ctx.expresion().getStart().getStartIndex(),ctx.expresion().getStop().getStopIndex()+1);
+        this.current_body += ctx.ID().getText()+ctx.id_extend().getText()+" = "+expresionMngr(raw_expr);
     }
     /**
      * {@inheritDoc}

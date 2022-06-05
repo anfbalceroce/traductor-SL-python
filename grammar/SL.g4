@@ -32,10 +32,10 @@ m_expresion_p : ',' m_term m_expresion_p  | /* epsilon */  ;
 m_term : m_factor  ;
 m_factor : '{' m_expresion '}'  | '.' '.' '.'  | expresion  ;
 expresion : logic_term logic_expresion_p  ;
-logic_expresion_p : 'or' logic_term logic_expresion_p  | /* epsilon */  ;
+logic_expresion_p : OR logic_term logic_expresion_p  | /* epsilon */  ;
 logic_term : logic_factor logic_term_p  ;
-logic_term_p : 'and' logic_factor logic_term_p  | /* epsilon */  ;
-logic_factor : logic_element  | 'not' logic_element  ;
+logic_term_p : AND logic_factor logic_term_p  | /* epsilon */  ;
+logic_factor : logic_element  | NOT logic_element  ;
 logic_element : bool  | relation_expresion  ;
 bool : 'TRUE'  | 'FALSE'  | 'SI'  | 'NO' ;
 relation_expresion : relation_term relation_expresion_p  ;
@@ -77,7 +77,9 @@ params : expresion next_param  | /* epsilon */  ;
 next_param : ',' expresion next_param  | /* epsilon */  ;
 matrix : ',' num_expresion matrix  | /* epsilon */  ;
 
-
+OR : 'or' ;
+AND : 'and' ;
+NOT : 'not' ;
 ID : 	[a-zA-Z\u00F1\u00D1_] [a-zA-Z\u00F1\u00D1_0-9]* ;
 NUM : [0-9]+('.'[0-9])?[0-9]*([eE][+-]?[0-9])?[0-9]* ;
 STRING : '"' ~["\n]* '"' | '\'' ~['\n]* '\'' | ('“'|'”') ~['\n]* ('“'|'”') | '‘' ~['\n]* '’' ;
