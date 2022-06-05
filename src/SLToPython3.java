@@ -1,8 +1,12 @@
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.Vocabulary;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
+
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class SLToPython3 extends SLBaseListener {
     public int indents = 0;
@@ -11,6 +15,7 @@ public class SLToPython3 extends SLBaseListener {
     public String body = "";
     public String function_body = "";
     public String current_body = "";
+    public HashMap<String, String> prebuilts = new HashMap<>(36);
 
     public String add_indents(String code){
         for (int i = 0; i < this.indents; i++){
@@ -22,8 +27,15 @@ public class SLToPython3 extends SLBaseListener {
     public String expresionMngr(String raw){
         SLLexer miniLex = new SLLexer(CharStreams.fromString(raw));
         String out = "";
+        Vocabulary vocab = miniLex.getVocabulary();
         for (Token tok : miniLex.getAllTokens()){
-            out += ' '+tok.getText()+' ';
+            String tokType = vocab.getSymbolicName(tok.getType());
+            if (tokType != null && tokType.equals("ID") && this.prebuilts.containsKey(tok.getText())){
+                out += ' '+this.prebuilts.get(tok.getText())+' ';
+            } else {
+                out += ' '+tok.getText()+' ';
+            }
+
         }
         return out;
     }
@@ -32,11 +44,71 @@ public class SLToPython3 extends SLBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
+    @Override public void enterStart(SLParser.StartContext ctx) {
+        // esto es solo para inicializar un HashMap con la traduccion de las funciones predefinidas de SL
+        this.prebuilts.put("dim","dim_tl");
+        this.prebuilts.put("imprimir","print");
+        this.prebuilts.put("cls","cls_tl");
+        this.prebuilts.put("leer","leer_tl");
+        this.prebuilts.put("set_ifs","set_ifs_tl");
+        this.prebuilts.put("abs","abs");
+        this.prebuilts.put("arctan","arctan_tl");
+        this.prebuilts.put("ascii","ascii_tl");
+        this.prebuilts.put("cos","cos");
+        this.prebuilts.put("dec","dec_tl");
+        this.prebuilts.put("eof","eof_tl");
+        this.prebuilts.put("exp","exp_tl");
+        this.prebuilts.put("get_ifs","get_ifs_tl");
+        this.prebuilts.put("inc","inc_tl");
+        this.prebuilts.put("int","int_tl");
+        this.prebuilts.put("log","log_tl");
+        this.prebuilts.put("lower","lower_tl");
+        this.prebuilts.put("mem","mem_tl");
+        this.prebuilts.put("ord","ord_tl");
+        this.prebuilts.put("paramval","paramval_tl");
+        this.prebuilts.put("pcount", "pcount_tl");
+        this.prebuilts.put("pos", "pos_tl");
+        this.prebuilts.put("random", "random_tl");
+        this.prebuilts.put("sec", "sec_tl");
+        this.prebuilts.put("set_stdin", "set_stdin_tl");
+        this.prebuilts.put("set_stdout", "set_stdout_tl");
+        this.prebuilts.put("sin", "sin");
+        this.prebuilts.put("sqrt", "sqrt_tl");
+        this.prebuilts.put("str", "str_tl");
+        this.prebuilts.put("strdup", "strdup_tl");
+        this.prebuilts.put("strlen", "strlen_tl");
+        this.prebuilts.put("substr", "substr_tl");
+        this.prebuilts.put("tan", "tan_tl");
+        this.prebuilts.put("upper", "upper_tl");
+        this.prebuilts.put("val", "val_tl");
+        this.prebuilts.put("alen", "alen_tl");
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void enterHeader(SLParser.HeaderContext ctx) {
+        this.current_body = "";
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void exitHeader(SLParser.HeaderContext ctx) {
+        this.header = this.current_body;
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
     @Override public void enterVar(SLParser.VarContext ctx) {
-        this.header += ctx.ID(0).getText()+" = ";
+        this.current_body += ctx.ID(0).getText()+" = ";
         System.out.print(ctx.ID(0).getText()+" = ");
         for (int i = 1; i < ctx.ID().size(); i++) {
-            this.header += ctx.ID(i).getText()+" = ";
+            this.current_body += ctx.ID(i).getText()+" = ";
             System.out.print(ctx.ID(i).getText()+" = ");
         }
         String type = "";
@@ -53,7 +125,7 @@ public class SLToPython3 extends SLBaseListener {
             default:
                 type = "None";
         }
-        this.header += type + '\n';
+        this.current_body += type + '\n';
         System.out.print(type+'\n');
     }
     /**
@@ -68,7 +140,7 @@ public class SLToPython3 extends SLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterConst(SLParser.ConstContext ctx) {
-        this.header += ctx.ID().getText()+" = "+expresionMngr(ctx.expresion().getText())+'\n';
+        this.current_body += ctx.ID().getText()+" = "+expresionMngr(ctx.expresion().getText())+'\n';
         System.out.print(ctx.ID().getText()+" = "+expresionMngr(ctx.expresion().getText())+'\n');
     }
     /**
@@ -121,8 +193,12 @@ public class SLToPython3 extends SLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterCall(SLParser.CallContext ctx) { // aca seria la traduccion de primitivas de SL a python
-        this.current_body += ctx.ID().getText()+'('+ctx.params().getText()+')';
-        System.out.print(ctx.ID().getText()+'('+ctx.params().getText()+')');
+        String tledID = ctx.ID().getText();
+        if (this.prebuilts.containsKey(ctx.ID().getText())) {
+            tledID = this.prebuilts.get(ctx.ID().getText());
+        }
+        this.current_body += tledID+'('+ctx.params().getText()+')';
+        System.out.print(tledID+'('+ctx.params().getText()+')');
     }
     /**
      * {@inheritDoc}
