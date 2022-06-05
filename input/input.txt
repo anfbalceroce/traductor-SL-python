@@ -27,3 +27,13 @@ inicio
   }
   imprimir ("\nLa suma es ", suma)
 fin
+
+subrutina mi_sub (a : numerico; ref b : numerico)
+/*
+    a se recibe por valor, pero b por referencia.
+*/
+inicio
+    a = 5
+    b = b * 5
+    imprimir ( "\n", a, ' ', b)
+fin

@@ -13,7 +13,6 @@ public class SLToPython3 extends SLBaseListener {
     public String header = "";
     public String functions = "";
     public String body = "";
-    public String function_body = "";
     public String current_body = "";
     public HashMap<String, String> prebuilts = new HashMap<>(36);
 
@@ -91,13 +90,10 @@ public class SLToPython3 extends SLBaseListener {
         this.prebuilts.put("upper", "upper_tl");
         this.prebuilts.put("val", "val_tl");
         this.prebuilts.put("alen", "alen_tl");
-    }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterHeader(SLParser.HeaderContext ctx) {
+
+        this.header = "";
+        this.body = "";
+        this.functions = "";
         this.current_body = "";
     }
     /**
@@ -105,8 +101,14 @@ public class SLToPython3 extends SLBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
+    @Override public void enterHeader(SLParser.HeaderContext ctx) {
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
     @Override public void exitHeader(SLParser.HeaderContext ctx) {
-        this.header = this.current_body;
     }
     /**
      * {@inheritDoc}
@@ -165,7 +167,9 @@ public class SLToPython3 extends SLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMain(SLParser.MainContext ctx) {
+        this.header += this.current_body+'\n';
         System.out.print("\n");
+        this.current_body = "";
     }
     /**
      * {@inheritDoc}
@@ -173,7 +177,7 @@ public class SLToPython3 extends SLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void exitMain(SLParser.MainContext ctx) {
-        this.body = this.current_body;
+        this.body += this.current_body;
     }
     /**
      * {@inheritDoc}
@@ -427,6 +431,26 @@ public class SLToPython3 extends SLBaseListener {
         catch (Exception e) {
             System.err.println("Error (Test): " + e);
         }
+        this.indents --;
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void enterSub(SLParser.SubContext ctx) {
+        this.current_body = "";
+        this.current_body += "DEFINICION SUBRUTINA\n";
+        System.out.print("DEFINICION SUBRUTINA\n");
+        this.indents ++;
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void exitSub(SLParser.SubContext ctx) {
+        this.functions += this.current_body+'\n';
         this.indents --;
     }
 }

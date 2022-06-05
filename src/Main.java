@@ -19,10 +19,10 @@ public class Main {
             ParseTreeWalker walker = new ParseTreeWalker();
             SLToPython3 tl = new SLToPython3();
             walker.walk(tl, tree);
-            System.out.println("========================================");
-            System.out.println(tl.header); //
-            System.out.println(tl.functions); //
-            System.out.println(tl.body); //
+            System.out.println("=============reordered=================");
+            System.out.print(tl.header); //
+            System.out.print(tl.functions); //
+            System.out.print(tl.body); //
         } catch (Exception e){
             System.err.println("Error (Test): " + e);
         }
