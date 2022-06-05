@@ -1,4 +1,6 @@
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -17,18 +19,14 @@ public class SLToPython3 extends SLBaseListener {
         }
         return code;
     }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterHeader(SLParser.HeaderContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitHeader(SLParser.HeaderContext ctx) { }
+    public String expresionMngr(String raw){
+        SLLexer miniLex = new SLLexer(CharStreams.fromString(raw));
+        String out = "";
+        for (Token tok : miniLex.getAllTokens()){
+            out += ' '+tok.getText()+' ';
+        }
+        return out;
+    }
     /**
      * {@inheritDoc}
      *
@@ -70,14 +68,16 @@ public class SLToPython3 extends SLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterConst(SLParser.ConstContext ctx) {
-        System.out.print(ctx.ID().getText()+" = "+ctx.expresion().getText()+'\n');
+        this.header += ctx.ID().getText()+" = "+expresionMngr(ctx.expresion().getText())+'\n';
+        System.out.print(ctx.ID().getText()+" = "+expresionMngr(ctx.expresion().getText())+'\n');
     }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void exitConst(SLParser.ConstContext ctx) { }
+    @Override public void exitConst(SLParser.ConstContext ctx) {
+    }
     /**
      * {@inheritDoc}
      *
@@ -137,11 +137,11 @@ public class SLToPython3 extends SLBaseListener {
      */
     @Override public void enterAssingment(SLParser.AssingmentContext ctx) {
         if (ctx.expresion() != null) { // assingment
-            this.current_body += ctx.ID().getText()+ctx.id_extend().getText()+" = "+ctx.expresion().getText();
-            System.out.print(ctx.ID().getText()+ctx.id_extend().getText()+" = "+ctx.expresion().getText());
+            this.current_body += ctx.ID().getText()+ctx.id_extend().getText()+" = "+expresionMngr(ctx.expresion().getText());
+            System.out.print(ctx.ID().getText()+ctx.id_extend().getText()+" = "+expresionMngr(ctx.expresion().getText()));
         } else if (ctx.m_expresion() != null) { // matrix assingment
-            this.current_body += ctx.ID().getText()+ctx.id_extend().getText()+" = "+'['+ctx.m_expresion().getText()+']';
-            System.out.print(ctx.ID().getText()+ctx.id_extend().getText()+" = "+'['+ctx.m_expresion().getText()+']');
+            this.current_body += ctx.ID().getText()+ctx.id_extend().getText()+" = "+expresionMngr(ctx.expresion().getText());
+            System.out.print(ctx.ID().getText()+ctx.id_extend().getText()+" = "+expresionMngr(ctx.expresion().getText()));
         }
     }
     /**
@@ -156,8 +156,8 @@ public class SLToPython3 extends SLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterIf(SLParser.IfContext ctx) {
-        this.current_body += "if ("+ctx.expresion().getText()+"):\n";
-        System.out.print("if ("+ctx.expresion().getText()+"):\n");
+        this.current_body += "if ("+expresionMngr(ctx.expresion().getText())+"):\n";
+        System.out.print("if ("+expresionMngr(ctx.expresion().getText())+"):\n");
         this.indents ++;
     }
     /**
@@ -176,8 +176,8 @@ public class SLToPython3 extends SLBaseListener {
     @Override public void enterSinosi(SLParser.SinosiContext ctx) {
         this.indents --;
         this.current_body = add_indents(this.current_body);
-        this.current_body += "elif ("+ctx.expresion().getText()+"):\n";
-        System.out.print("elif ("+ctx.expresion().getText()+"):\n");
+        this.current_body += "elif ("+expresionMngr(ctx.expresion().getText())+"):\n";
+        System.out.print("elif ("+expresionMngr(ctx.expresion().getText())+"):\n");
         this.indents ++;
     }
     /**
@@ -193,8 +193,8 @@ public class SLToPython3 extends SLBaseListener {
      */
     @Override public void enterWhile(SLParser.WhileContext ctx) {
         if(ctx.expresion()!=null){
-            this.current_body += "while "+ctx.expresion().getText()+":"+'\n';
-            System.out.print("while "+ctx.expresion().getText()+":"+'\n');
+            this.current_body += "while "+expresionMngr(ctx.expresion().getText())+":"+'\n';
+            System.out.print("while "+expresionMngr(ctx.expresion().getText())+":"+'\n');
             this.indents ++;
         }
     }
@@ -231,8 +231,8 @@ public class SLToPython3 extends SLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterSwitch(SLParser.SwitchContext ctx) { // eval
-        this.current_body += "if ("+ctx.expresion().getText()+"):\n";
-        System.out.print("if ("+ctx.expresion().getText()+"):\n");
+        this.current_body += "if ("+expresionMngr(ctx.expresion().getText())+"):\n";
+        System.out.print("if ("+expresionMngr(ctx.expresion().getText())+"):\n");
         this.indents ++;
     }
     /**
@@ -251,8 +251,8 @@ public class SLToPython3 extends SLBaseListener {
     @Override public void enterCase(SLParser.CaseContext ctx) {
         this.indents --;
         this.current_body = add_indents(this.current_body);
-        this.current_body += "elif ("+ctx.expresion().getText()+"):\n";
-        System.out.print("elif ("+ctx.expresion().getText()+"):\n");
+        this.current_body += "elif ("+expresionMngr(ctx.expresion().getText())+"):\n";
+        System.out.print("elif ("+expresionMngr(ctx.expresion().getText())+"):\n");
         this.indents ++;
     }
     /**
@@ -319,16 +319,4 @@ public class SLToPython3 extends SLBaseListener {
         }
         this.indents --;
     }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterExpresion(SLParser.ExpresionContext ctx) { }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitExpresion(SLParser.ExpresionContext ctx) { }
 }
