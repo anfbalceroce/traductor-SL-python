@@ -1,6 +1,7 @@
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 import java.io.File;
+import java.io.PrintWriter;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -23,6 +24,11 @@ public class Main {
             System.out.print(tl.header); //
             System.out.print(tl.functions); //
             System.out.print(tl.body); //
+            PrintWriter writer = new PrintWriter("output/out.py", "UTF-8");
+            writer.print(tl.header); //
+            writer.print(tl.functions); //
+            writer.print(tl.body); //
+            writer.close();
         } catch (Exception e){
             System.err.println("Error (Test): " + e);
         }

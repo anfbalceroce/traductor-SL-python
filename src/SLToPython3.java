@@ -215,8 +215,8 @@ public class SLToPython3 extends SLBaseListener {
         if (this.prebuilts.containsKey(ctx.ID().getText())) {
             tledID = this.prebuilts.get(ctx.ID().getText());
         }
-        this.current_body += tledID+'('+ctx.params().getText()+')';
-        System.out.print(tledID+'('+ctx.params().getText()+')');
+        this.current_body += tledID+'('+expresionMngr(ctx.params().getText())+')';
+        System.out.print(tledID+'('+expresionMngr(ctx.params().getText())+')');
     }
     /**
      * {@inheritDoc}
