@@ -1,1 +1,2 @@
-A = (let >= '
+
+mal(True  and True )
