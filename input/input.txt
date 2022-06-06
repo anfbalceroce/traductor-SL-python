@@ -1,6 +1,3 @@
-var
-f_inic, c_inic : numerico
-T : vector [4] cadena
 inicio
-T [f_inic, c_inic] = 'A'
+  imprimir ("Hola mundo!")
 fin

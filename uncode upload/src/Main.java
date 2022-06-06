@@ -14,8 +14,9 @@ public class Main {
                 lexer = new SLLexer(CharStreams.fromFileName(args[0]));
                 raw_input = CharStreams.fromFileName(args[0]).toString();
             }else {
-                lexer = new SLLexer(CharStreams.fromStream(System.in));
-                raw_input = CharStreams.fromFileName(args[0]).toString();
+                raw_input = CharStreams.fromStream(System.in).toString();
+                lexer = new SLLexer(CharStreams.fromString(raw_input));
+
             }
             // Identificar al analizador léxico como fuente de tokens para el sintactico
             CommonTokenStream tokens = new CommonTokenStream(lexer);
