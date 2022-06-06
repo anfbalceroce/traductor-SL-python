@@ -19,7 +19,7 @@ public class SLToPython3 extends SLBaseListener {
     public String add_indents(String code){
         for (int i = 0; i < this.indents; i++){
             code +='\t';
-            System.out.print('\t');
+            //System.out.print('\t');
         }
         return code;
     }
@@ -36,7 +36,7 @@ public class SLToPython3 extends SLBaseListener {
 
         for (Token tok : miniLex.getAllTokens()){ // iterates over all tokens from input
             String tokType = vocab.getSymbolicName(tok.getType()); // get token type
-            //System.out.println(tokType+" "+tok.getText());
+            ////System.out.println(tokType+" "+tok.getText());
             if (tokType != null && tokType.equals("ID") && this.prebuilts.containsKey(tok.getText())){
                 // if token is ID ant it's a prebuilt (HashMap check) concatenates the translation
                 out += this.prebuilts.get(tok.getText());
@@ -105,7 +105,7 @@ public class SLToPython3 extends SLBaseListener {
         this.prebuilts.put("set_ifs","set_ifs_tl");
         this.prebuilts.put("abs","abs");
         this.prebuilts.put("arctan","arctan_tl");
-        this.prebuilts.put("ascii","char");
+        this.prebuilts.put("ascii","chr");
         this.prebuilts.put("cos","cos");
         this.prebuilts.put("dec","dec_tl");
         this.prebuilts.put("eof","eof_tl");
@@ -162,10 +162,10 @@ public class SLToPython3 extends SLBaseListener {
     @Override public void enterVar(SLParser.VarContext ctx) {
         this.current_body = add_indents(this.current_body);
         this.current_body += ctx.ID(0).getText()+" = ";
-        System.out.print(ctx.ID(0).getText()+" = ");
+        //System.out.print(ctx.ID(0).getText()+" = ");
         for (int i = 1; i < ctx.ID().size(); i++) {
             this.current_body += ctx.ID(i).getText()+" = ";
-            System.out.print(ctx.ID(i).getText()+" = ");
+            //System.out.print(ctx.ID(i).getText()+" = ");
         }
         String type = "";
         switch(ctx.tipo().getText()) {
@@ -186,7 +186,7 @@ public class SLToPython3 extends SLBaseListener {
                 type = "None";
         }
         this.current_body += type + '\n';
-        System.out.print(type+'\n');
+        //System.out.print(type+'\n');
     }
     /**
      * {@inheritDoc}
@@ -202,7 +202,7 @@ public class SLToPython3 extends SLBaseListener {
     @Override public void enterConst(SLParser.ConstContext ctx) {
         this.current_body = add_indents(this.current_body);
         this.current_body += ctx.ID().getText()+" = "+expresionMngr(ctx.expresion().getText())+'\n';
-        System.out.print(ctx.ID().getText()+" = "+expresionMngr(ctx.expresion().getText())+'\n');
+        //System.out.print(ctx.ID().getText()+" = "+expresionMngr(ctx.expresion().getText())+'\n');
     }
     /**
      * {@inheritDoc}
@@ -218,7 +218,7 @@ public class SLToPython3 extends SLBaseListener {
      */
     @Override public void enterMain(SLParser.MainContext ctx) {
         this.header += this.current_body+'\n';
-        System.out.print("\n");
+        //System.out.print("\n");
         this.current_body = "";
     }
     /**
@@ -248,7 +248,7 @@ public class SLToPython3 extends SLBaseListener {
             semicolon = ctx.SEP().getText();
         }
         this.current_body += semicolon+'\n';
-        System.out.print(semicolon+'\n');
+        //System.out.print(semicolon+'\n');
     }
     /**
      * {@inheritDoc}
@@ -269,7 +269,7 @@ public class SLToPython3 extends SLBaseListener {
             raw_params += Main.raw_input.substring(start_index,end_index);
         }
         this.current_body += tledID+'('+expresionMngr(raw_params)+')';
-        System.out.print(tledID+'('+expresionMngr(raw_params)+')');
+        //System.out.print(tledID+'('+expresionMngr(raw_params)+')');
     }
     /**
      * {@inheritDoc}
@@ -286,8 +286,10 @@ public class SLToPython3 extends SLBaseListener {
         String raw_expresion = "";
         int start_index = 0;
         int end_index = 0;
+
         String full_id = ctx.ID().getText();
-        if (ctx.id_extend().ids_options() != null) {
+        //System.out.println(full_id);
+        if (ctx.id_extend().ids_options(0) != null) {
             start_index = ctx.id_extend().getStart().getStartIndex();
             end_index = ctx.id_extend().getStop().getStopIndex()+1;
             full_id += Main.raw_input.substring(start_index,end_index);
@@ -297,13 +299,13 @@ public class SLToPython3 extends SLBaseListener {
             end_index = ctx.expresion().getStop().getStopIndex()+1;
             raw_expresion = Main.raw_input.substring(start_index,end_index);
             this.current_body += expresionMngr(full_id)+" = "+expresionMngr(raw_expresion);
-            System.out.print(expresionMngr(full_id)+" = "+expresionMngr(raw_expresion));
+            //System.out.print(expresionMngr(full_id)+" = "+expresionMngr(raw_expresion));
         } else if (ctx.m_expresion() != null) { // matrix assingment
             start_index = ctx.m_expresion().getStart().getStartIndex();
             end_index = ctx.m_expresion().getStop().getStopIndex()+1;
             raw_expresion = Main.raw_input.substring(start_index,end_index);
             this.current_body += expresionMngr(full_id)+" = ["+expresionMngr(raw_expresion)+"]";
-            System.out.print(expresionMngr(full_id)+" = ["+expresionMngr(raw_expresion)+"]");
+            //System.out.print(expresionMngr(full_id)+" = ["+expresionMngr(raw_expresion)+"]");
         }
     }
     /**
@@ -325,7 +327,7 @@ public class SLToPython3 extends SLBaseListener {
         end_index = ctx.expresion().getStop().getStopIndex()+1;
         raw_expresion = Main.raw_input.substring(start_index,end_index);
         this.current_body += "if ("+expresionMngr(raw_expresion)+"):\n";
-        System.out.print("if ("+expresionMngr(raw_expresion)+"):\n");
+        //System.out.print("if ("+expresionMngr(raw_expresion)+"):\n");
         this.indents ++;
     }
     /**
@@ -353,7 +355,7 @@ public class SLToPython3 extends SLBaseListener {
         raw_expresion = Main.raw_input.substring(start_index,end_index);
 
         this.current_body += "elif ("+expresionMngr(raw_expresion)+"):\n";
-        System.out.print("elif ("+expresionMngr(raw_expresion)+"):\n");
+        //System.out.print("elif ("+expresionMngr(raw_expresion)+"):\n");
         this.indents ++;
     }
     /**
@@ -377,7 +379,7 @@ public class SLToPython3 extends SLBaseListener {
             raw_expresion = Main.raw_input.substring(start_index,end_index);
 
             this.current_body += "while "+expresionMngr(raw_expresion)+":"+'\n';
-            System.out.print("while "+expresionMngr(raw_expresion)+":"+'\n');
+            //System.out.print("while "+expresionMngr(raw_expresion)+":"+'\n');
             this.indents ++;
         }
     }
@@ -405,7 +407,7 @@ public class SLToPython3 extends SLBaseListener {
         if(ctx.expresion()!=null){
 
             this.current_body+="while "+"True"+":"+'\n';
-            System.out.print("while "+"True"+":"+'\n');
+            //System.out.print("while "+"True"+":"+'\n');
             this.indents++;
 
             //this.current_body+=ctx.sentencia();
@@ -429,13 +431,13 @@ public class SLToPython3 extends SLBaseListener {
         raw_expresion = Main.raw_input.substring(start_index,end_index);
 
         this.current_body+="if("+expresionMngr(raw_expresion)+"):"+'\n';
-        System.out.print("if("+expresionMngr(raw_expresion)+"):"+'\n');
+        //System.out.print("if("+expresionMngr(raw_expresion)+"):"+'\n');
 
         this.indents++;
         this.current_body = add_indents(this.current_body);
 
         this.current_body+="break";
-        System.out.print("break");
+        //System.out.print("break");
 
         this.indents--;
         this.indents--;
@@ -456,7 +458,7 @@ public class SLToPython3 extends SLBaseListener {
         raw_expresion = Main.raw_input.substring(start_index,end_index);
 
         this.current_body += "if ("+expresionMngr(raw_expresion)+"):\n";
-        System.out.print("if ("+expresionMngr(raw_expresion)+"):\n");
+        //System.out.print("if ("+expresionMngr(raw_expresion)+"):\n");
         this.indents ++;
     }
     /**
@@ -484,7 +486,7 @@ public class SLToPython3 extends SLBaseListener {
         raw_expresion = Main.raw_input.substring(start_index,end_index);
 
         this.current_body += "elif ("+expresionMngr(raw_expresion)+"):\n";
-        System.out.print("elif ("+expresionMngr(raw_expresion)+"):\n");
+        //System.out.print("elif ("+expresionMngr(raw_expresion)+"):\n");
         this.indents ++;
     }
     /**
@@ -503,7 +505,7 @@ public class SLToPython3 extends SLBaseListener {
         this.indents --;
         this.current_body = add_indents(this.current_body);
         this.current_body += "else:\n";
-        System.out.print("else:\n");
+        //System.out.print("else:\n");
         this.indents ++;
     }
     /**
@@ -543,14 +545,14 @@ public class SLToPython3 extends SLBaseListener {
         String hasta = expresionMngr(raw_expresion);
         if (ctx.num_expresion(2) == null) { // sin paso
             this.current_body += "for "+ctx.ID().getText()+" in range("+desde+", "+hasta+"):"+'\n';
-            System.out.print("for "+ctx.ID().getText()+" in range("+desde+", "+hasta+"):"+'\n');
+            //System.out.print("for "+ctx.ID().getText()+" in range("+desde+", "+hasta+"):"+'\n');
         }else { // con paso
             start_index = ctx.num_expresion(2).getStart().getStartIndex();
             end_index = ctx.num_expresion(2).getStop().getStopIndex()+1;
             raw_expresion = Main.raw_input.substring(start_index,end_index);
             String paso = expresionMngr(raw_expresion);
             this.current_body += "for "+ctx.ID().getText()+" in range("+desde+", "+hasta+", "+paso+"):"+'\n';
-            System.out.print("for "+ctx.ID().getText()+" in range("+desde+", "+hasta+", "+paso+"):"+'\n');
+            //System.out.print("for "+ctx.ID().getText()+" in range("+desde+", "+hasta+", "+paso+"):"+'\n');
         }
         this.indents ++;
     }
@@ -587,7 +589,7 @@ public class SLToPython3 extends SLBaseListener {
         }
         temp += "):\n";
         this.current_body += temp;
-        System.out.print(temp);
+        //System.out.print(temp);
         this.indents ++;
     }
     /**
@@ -597,7 +599,7 @@ public class SLToPython3 extends SLBaseListener {
      */
     @Override public void exitSub(SLParser.SubContext ctx) {
         this.functions += this.current_body+'\n';
-        System.out.print('\n');
+        //System.out.print('\n');
         this.indents --;
     }
     /**
@@ -616,6 +618,6 @@ public class SLToPython3 extends SLBaseListener {
         raw_expresion = Main.raw_input.substring(start_index,end_index);
 
         this.current_body += "return ("+expresionMngr(raw_expresion)+")";
-        System.out.print("return ("+expresionMngr(raw_expresion)+")");
+        //System.out.print("return ("+expresionMngr(raw_expresion)+")");
     }
 }

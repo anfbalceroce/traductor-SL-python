@@ -25,11 +25,11 @@ public class Main {
             ParseTreeWalker walker = new ParseTreeWalker();
             SLToPython3 tl = new SLToPython3();
             walker.walk(tl, tree);
-            System.out.println("=============reordered=================");
+            System.out.println("==== Traduccion a Python, disponible tambien en out.py ====");
             System.out.print(tl.header); //
             System.out.print(tl.functions); //
             System.out.print(tl.body); //
-            PrintWriter writer = new PrintWriter("output/out.py", "UTF-8");
+            PrintWriter writer = new PrintWriter("out.py", "UTF-8");
             writer.print(tl.header); //
             writer.print(tl.functions); //
             writer.print(tl.body); //

@@ -6,6 +6,8 @@ y luego fue modificada gracias a las capacidades de ANTLR.
 
 Se utilzaron las estructuras de Listener de ANTLR para la traduccion.
 
+Salida por consola y en archivo out.py
+
 Integrantes del grupo de trabajo:
 Sergio Camilo Espinosa Botero - sespinosab@unal.edu.co
 Juan Sebastian Reina Zamora - jreinaz@unal.edu.co

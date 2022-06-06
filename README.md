@@ -5,6 +5,8 @@ Se utilizo ANTLR v4 y una gramatica propia desarrollada durante el curso, inicia
 
 Se utilzaron las estructuras de Listener de ANTLR para la traduccion.
 
+Salida por consola y en archivo out.p
+
 Integrantes del grupo de trabajo:
 * **Sergio Camilo Espinosa Botero** - sespinosab@unal.edu.co
 * **Juan Sebastian Reina Zamora** - jreinaz@unal.edu.co
