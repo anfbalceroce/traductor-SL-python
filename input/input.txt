@@ -1,3 +1,6 @@
+var
+f_inic, c_inic : numerico
+T : vector [4] cadena
 inicio
-  imprimir ("Hola mundo!")
+T [f_inic, c_inic] = 'A'
 fin

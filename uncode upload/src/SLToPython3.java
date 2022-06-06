@@ -5,8 +5,10 @@ import org.antlr.v4.runtime.Vocabulary;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class SLToPython3 extends SLBaseListener {
     public int indents = 0;
@@ -179,8 +181,102 @@ public class SLToPython3 extends SLBaseListener {
                 type = "\"\"";
                 break;
             default:
-                if  (ctx.tipo().getText().startsWith("matriz") || ctx.tipo().getText().startsWith("vector")) {
-                    type = "[]";
+                if  (ctx.tipo().getText().startsWith("matriz")) {
+                    String temp = "";
+                    String raw_expresion = "";
+                    int start_index = 0;
+                    int end_index = 0;
+                    start_index = ctx.tipo().getStart().getStartIndex();
+                    end_index = ctx.tipo().getStop().getStopIndex()+1;
+                    raw_expresion = Main.raw_input.substring(start_index,end_index);
+
+
+
+                    SLLexer miniLex = new SLLexer(CharStreams.fromString(raw_expresion)); // mini lexer to identify tokens
+                    String out = "";
+                    Vocabulary vocab = miniLex.getVocabulary(); // get names of Token types, ej ID, NUM, etc
+
+                    List<String> values = new ArrayList<>();
+                    String tipo = "";
+
+                    for (Token tok: miniLex.getAllTokens()){ // iterates over all tokens from input
+                        String tokType = vocab.getSymbolicName(tok.getType()); // get token type
+                        //System.out.println(tokType+" "+tok.getText());
+                        if (tokType != null) {
+                            values.add(tok.getText());
+                        }
+                        tipo = tok.getText();
+                    }
+                    switch (tipo){
+                        case "numerico":
+                            tipo = "0";
+                            break;
+                        case "logico":
+                            tipo = "False";
+                            break;
+                        case "cadena":
+                            tipo = "\"\"";
+                            break;
+                        default:
+                            tipo = "None";
+                            break;
+                    }
+                    temp += "["+tipo+" for x in range("+values.get(0)+")]";
+                    for (int i = 1; i < values.size(); i++){
+                        type += "[";
+                        temp += "for x in range("+values.get(i)+")]";
+
+                    }
+                    type += temp;
+                    break;
+                }
+                if  ( ctx.tipo().getText().startsWith("vector")) {
+                    String temp = "";
+                    String raw_expresion = "";
+                    int start_index = 0;
+                    int end_index = 0;
+                    start_index = ctx.tipo().getStart().getStartIndex();
+                    end_index = ctx.tipo().getStop().getStopIndex()+1;
+                    raw_expresion = Main.raw_input.substring(start_index,end_index);
+
+
+
+                    SLLexer miniLex = new SLLexer(CharStreams.fromString(raw_expresion)); // mini lexer to identify tokens
+                    String out = "";
+                    Vocabulary vocab = miniLex.getVocabulary(); // get names of Token types, ej ID, NUM, etc
+
+                    List<String> values = new ArrayList<>();
+                    String tipo = "";
+
+                    for (Token tok: miniLex.getAllTokens()){ // iterates over all tokens from input
+                        String tokType = vocab.getSymbolicName(tok.getType()); // get token type
+                        //System.out.println(tokType+" "+tok.getText());
+                        if (tokType != null) {
+                            values.add(tok.getText());
+                        }
+                        tipo = tok.getText();
+                    }
+                    switch (tipo){
+                        case "numerico":
+                            tipo = "0";
+                            break;
+                        case "logico":
+                            tipo = "False";
+                            break;
+                        case "cadena":
+                            tipo = "\"\"";
+                            break;
+                        default:
+                            tipo = "None";
+                            break;
+                    }
+                    temp += "["+tipo+" for x in range("+values.get(0)+")]";
+                    for (int i = 1; i < values.size(); i++){
+                        type += "[";
+                        temp += "for x in range("+values.get(i)+")]";
+
+                    }
+                    type += temp;
                     break;
                 }
                 type = "None";
